@@ -1,0 +1,174 @@
+<header class="header">
+  <div class="container header-inner">
+    <div class="logo-place">
+      <div id="customLogoArea" class="logo-placeholder">🗑️ ЭКО-ВЫВОЗ</div>
+      <img src="images/logo.jpg" alt="Эко-Вывоз" class="logo-image">
+    </div>
+    <div class="header-contacts">
+      <a href="tel:+79532479762" class="phone-link">📞 +7 953 247 97 62</a>
+      <div class="nav-badge">📍 Псков · 10:00-22:00</div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    @if (bannerVisible) {
+      <div class="vpn-banner">
+        <div class="vpn-banner-content">
+          <span class="vpn-banner-icon">🌐</span>
+          <div class="vpn-banner-text">
+            <strong>Уважаемые клиенты!</strong> Для корректной работы формы заявки, пожалуйста, <strong>включите VPN</strong>.
+            Приносим извинения за временные неудобства. Спасибо за понимание! 🙏
+          </div>
+          <button class="vpn-banner-close" (click)="bannerVisible = false">✕</button>
+        </div>
+      </div>
+    }
+
+    <div class="hero-grid">
+      <div class="info-card">
+        <h1>Вывозим мусор <span class="highlight">чисто и быстро</span> по Пскову</h1>
+
+        <div class="work-schedule">
+          <div style="font-weight: 700; font-size: 1.2rem;">🏠 РАБОТАЕМ:</div>
+          <div style="margin: 8px 0;">📍 Только в пределах города Псков</div>
+          <div>⏰ Ежедневно с 10:00 до 22:00</div>
+          <div>🚫 Суббота и Воскресенье — <strong>выходные</strong></div>
+        </div>
+
+        <div class="double-lists">
+          <div class="list-box">
+            <h3>✅ ЧТО ВЫНОСИМ:</h3>
+            <ul>
+              <li class="checkmark">Бытовой мусор (пищевые отходы, упаковка, пластик)</li>
+              <li class="checkmark">Старые вещи, одежду (в пакетах)</li>
+              <li class="checkmark">Мелкий хлам после уборки (в пакетах)</li>
+              <li class="checkmark">Макулатуру, картон (в пакетах)</li>
+            </ul>
+          </div>
+          <div class="list-box">
+            <h3>❌ ЧТО НЕ ВЫНОСИМ:</h3>
+            <ul>
+              <li class="crossmark">Строительный мусор (обои, штукатурка, плитка)</li>
+              <li class="crossmark">Крупногабаритную технику</li>
+              <li class="crossmark">Опасные отходы (батарейки, лампы, химикаты)</li>
+              <li class="crossmark">Мебель, двери, окна</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="calc-card">
+        <div class="calc-title">💰 Калькулятор стоимости</div>
+
+        <div class="price-row">
+          <span>🚗 Выезд курьера</span>
+          <span><strong>{{ DELIVERY_FEE }} ₽</strong> (фиксировано)</span>
+        </div>
+
+        <div class="input-group">
+          <label>📦 Пакет до 30 л — {{ SMALL_PRICE }} ₽/шт</label>
+          <div class="counter">
+            <button class="counter-btn" (click)="decrement('small')">−</button>
+            <span class="counter-value">{{ smallQty() }}</span>
+            <button class="counter-btn" (click)="increment('small')">+</button>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label>🛍️ Пакет 30–60 л — {{ LARGE_PRICE }} ₽/шт</label>
+          <div class="counter">
+            <button class="counter-btn" (click)="decrement('large')">−</button>
+            <span class="counter-value">{{ largeQty() }}</span>
+            <button class="counter-btn" (click)="increment('large')">+</button>
+          </div>
+        </div>
+
+        <div class="price-detail">
+          <div>🚚 Выезд: <strong>{{ DELIVERY_FEE }} ₽</strong></div>
+          <div>📦 Маленькие пакеты: {{ smallCost() }} ₽</div>
+          <div>📦 Большие пакеты: {{ largeCost() }} ₽</div>
+          <div class="total">{{ total() }} ₽</div>
+          <button class="order-btn" (click)="openModal()">📞 Оформить заявку</button>
+          <div class="example-box">
+            <strong>🧮 ПРИМЕР РАСЧЕТА:</strong><br>
+            2 маленьких пакета + 1 большой = <br>
+            50₽ + 80₽ + 60₽ = <strong>190₽</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- Модальное окно -->
+@if (modalOpen()) {
+  <div id="orderModal" class="modal" style="display: flex;">
+    <div class="modal-content">
+      <h3>📋 Оформление заявки</h3>
+      <form (ngSubmit)="onSubmit()">
+        <div class="vpn-warning">
+          <span class="warning-icon">⚠️</span>
+          <div class="warning-text">
+            <strong>Важно!</strong> Для отправки заявки необходимо <strong>включить VPN</strong>.
+            Если форма не отправляется — позвоните нам по телефону
+            <a href="tel:+79532479762">+7 953 247 97 62</a>
+          </div>
+        </div>
+
+        <input type="text" [(ngModel)]="formData.name" name="name" placeholder="Ваше имя *" required>
+        <input type="tel" [(ngModel)]="formData.phone" name="phone" placeholder="Телефон *" required>
+        <input type="email" [(ngModel)]="formData.email" name="email" placeholder="Ваш Email" required>
+        <input type="text" [(ngModel)]="formData.address" name="address" placeholder="Адрес в Пскове *" required>
+
+        <div class="time-selection">
+          <label>⏰ Желаемое время вывоза:</label>
+          <select [(ngModel)]="formData.time" name="time" required>
+            <option value="">Выберите время</option>
+            <option value="10:00-11:00">10:00 - 11:00</option>
+            <option value="11:00-12:00">11:00 - 12:00</option>
+            <option value="12:00-13:00">12:00 - 13:00</option>
+            <option value="13:00-14:00">13:00 - 14:00</option>
+            <option value="14:00-15:00">14:00 - 15:00</option>
+            <option value="15:00-16:00">15:00 - 16:00</option>
+            <option value="16:00-17:00">16:00 - 17:00</option>
+            <option value="17:00-18:00">17:00 - 18:00</option>
+            <option value="18:00-19:00">18:00 - 19:00</option>
+            <option value="19:00-20:00">19:00 - 20:00</option>
+            <option value="20:00-21:00">20:00 - 21:00</option>
+            <option value="21:00-22:00">21:00 - 22:00</option>
+          </select>
+        </div>
+
+        <textarea [(ngModel)]="formData.comment" name="comment" placeholder="Дополнительные пожелания (этаж, домофон, что именно вывозим и т.д.)" rows="3"></textarea>
+
+        <div class="order-summary">
+          <strong>📦 Предварительная сумма: {{ total() }} ₽</strong><br>
+          <small>📦 Пакетов до 30л: {{ smallQty() }} шт</small><br>
+          <small>🛍️ Пакетов 30-60л: {{ largeQty() }} шт</small>
+        </div>
+
+        <button type="submit" class="submit-btn" [disabled]="formStatus() === 'sending'">
+          {{ formStatus() === 'sending' ? '⏳ Отправка...' : '📩 Отправить заявку' }}
+        </button>
+        <button type="button" class="close-modal" (click)="closeModal()">Закрыть</button>
+      </form>
+
+      @if (formStatus() !== 'idle') {
+        <div class="form-status"
+             [class.success]="formStatus() === 'success'"
+             [class.error]="formStatus() === 'error'">
+          {{ formStatusMessage() }}
+        </div>
+      }
+    </div>
+  </div>
+}
+
+<footer class="footer">
+  <div class="container">
+    <p>🗑️ Вынос бытового мусора | Псков | Ежедневно 10:00–22:00 (сб-вс выходной)</p>
+    <p>© 2025 · Сервис чистоты и порядка</p>
+  </div>
+</footer>
